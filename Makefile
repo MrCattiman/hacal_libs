@@ -6,7 +6,7 @@ BLDDIR = build
 LIBDIR = /usr/lib/HACAL
 HEDDIR = /usr/include/HACAL
 
-LIBS := hacal_asmlib
+LIBS := libhacal_asm
 
 clean:
 	rm -rf $(BLDDIR)

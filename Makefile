@@ -3,8 +3,8 @@ CPARAM = -Wall -pedantic
 
 SRCDIR = src
 BLDDIR = build
-LIBDIR = /usr/lib/HACAL
-HEDDIR = /usr/include/HACAL
+LIBDIR = /usr/lib
+HEDDIR = /usr/include
 
 LIBS := libhacal_asm
 
@@ -15,14 +15,16 @@ all: $(BLDDIR)/ $(foreach lib,$(LIBS),$(lib).so)
 	@echo
 	@echo Build done!
 
-install: 
-	$(foreach exe,$(EXES),cp $(BLDDIR)/$(exe) $(EXEDIR)/)
+install: $(LIBDIR)/ $(HEDDIR)/
+	$(foreach lib,$(LIBS),cp $(BLDDIR)/$(lib).so $(LIBDIR)/)
+	$(foreach lib,$(LIBS),cp $(SRCDIR)/$(lib).h $(HEDDIR)/)
+	ldconfig -n -v /usr/lib
 	@echo
 	@echo Install done!
 
 uninstall: 
-	rm -rvf $(LIBDIR)
-	rm -rvf $(HEDDIR)
+	$(foreach lib,$(LIBS),rm -f $(LIBDIR)/$(lib).so)
+	$(foreach lib,$(LIBS),rm -f $(HEDDIR)/$(lib).h)
 
 %.so: $(SRCDIR)/%.c
 	$(CC) $(CPARAM) -shared -o $(BLDDIR)/$@ -fPIC $<

@@ -109,5 +109,44 @@ char* hacal_asm(char** cset, char** vset, char* inbuf, unsigned int inbuflen) {
 
 /* Disassembles binary HACAL and outputs a null terminated string, also: a proper null terminated HACAL string should end in two nulls instead of one */
 char* hacal_disasm(char** cset, char** vset, char* inbuf) {
-	
+	unsigned long size = 0;
+	unsigned long i = 0;
+	unsigned char csets[15];
+	unsigned char vsets[15];
+	/* Calculate set entry sizes */
+	for (i = 15; i--;) {
+		unsigned int ii = 0;
+		while (cset[i][++ii] != 0);
+		csets[i] = ii;
+	};
+	for (i = 15; i--;) {
+		unsigned int ii = 0;
+		while (vset[i][++ii] != 0);
+		vsets[i] = ii;
+	};
+	i = 0;
+	while (inbuf[i] != 0 && inbuf[i + 1] != 0 ) {
+		if(inbuf[i] == 0) {
+			size += 1;
+		} else {
+			size += csets[(inbuf[i] & 0xf0) >> 4] + vsets[inbuf[i] & 0xf];
+		};
+		i++;
+	};
+	char* outbuf = (char*)malloc(size);
+	i = 0;
+	while (inbuf[i] != 0 && inbuf[i + 1] != 0 ) {
+		if(inbuf[i] == 0) {
+			outbuf[i] = ' ';
+		} else {
+			for (unsigned char ii = 0; ii < csets[(inbuf[i] & 0xf0) >> 4]; ii++) {
+				outbuf[i + ii] = cset[i][ii];
+			};
+			for (unsigned char ii = 0; ii < vsets[inbuf[i] & 0xf]; ii++) {
+				outbuf[i + ii] = vset[i][ii];
+			};
+		};
+		i++;
+	};
+	return outbuf;
 }

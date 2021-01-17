@@ -18,7 +18,7 @@ all: $(BLDDIR)/ $(foreach lib,$(LIBS),$(lib).so)
 install: $(LIBDIR)/ $(HEDDIR)/
 	$(foreach lib,$(LIBS),cp $(BLDDIR)/$(lib).so $(LIBDIR)/)
 	$(foreach lib,$(LIBS),cp $(SRCDIR)/$(lib).h $(HEDDIR)/)
-	ldconfig -n -v /usr/lib
+	ldconfig -n /usr/lib
 	@echo
 	@echo Install done!
 

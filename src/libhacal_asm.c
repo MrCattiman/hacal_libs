@@ -125,7 +125,7 @@ char* hacal_disasm(char** cset, char** vset, char* inbuf) {
 		vsets[i] = ii;
 	};
 	i = 0;
-	while (inbuf[i] != 0 && inbuf[i + 1] != 0 ) {
+	while ( inbuf[i] != 0 || inbuf[i + 1] != 0 ) {
 		if(inbuf[i] == 0) {
 			size += 1;
 		} else {
@@ -133,22 +133,28 @@ char* hacal_disasm(char** cset, char** vset, char* inbuf) {
 		};
 		i++;
 	};
-	char* outbuf = (char*)malloc(size);
+	char* outbuf = (char*)malloc(size + 1);
+	outbuf[size] = 0;
 	i = 0;
+	unsigned long ix = 0;
 	unsigned char ii;
-	while (inbuf[i] != 0 || inbuf[i + 1] != 0 ) {
+	unsigned char cval = 0;
+	while ( inbuf[i] != 0 || inbuf[i + 1] != 0 ) {
 		if(inbuf[i] == 0) {
-			outbuf[i++] = ' ';
+			outbuf[ix++] = ' ';
 		} else {
-			for (ii = 0; ii < csets[(inbuf[i] & 0xf0) >> 4]; ii++) {
-				outbuf[i + ii] = cset[i][ii];
+			cval = ( (inbuf[i] & 0xf0) >> 4 ) - 1;
+			for (ii = 0; ii < csets[cval]; ii++) {
+				outbuf[ix + ii] = cset[cval][ii];
 			};
-			i += ii;
-			for (ii = 0; ii < vsets[inbuf[i] & 0xf]; ii++) {
-				outbuf[i + ii] = vset[i][ii];
+			ix += ii;
+			cval = ( inbuf[i] & 0xf ) - 1;
+			for (ii = 0; ii < vsets[cval]; ii++) {
+				outbuf[ix + ii] = vset[cval][ii];
 			};
-			i += ii;
+			ix += ii;
 		};
+		i++;
 	};
 	return outbuf;
 }

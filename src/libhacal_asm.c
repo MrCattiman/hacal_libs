@@ -135,18 +135,20 @@ char* hacal_disasm(char** cset, char** vset, char* inbuf) {
 	};
 	char* outbuf = (char*)malloc(size);
 	i = 0;
-	while (inbuf[i] != 0 && inbuf[i + 1] != 0 ) {
+	unsigned char ii;
+	while (inbuf[i] != 0 || inbuf[i + 1] != 0 ) {
 		if(inbuf[i] == 0) {
-			outbuf[i] = ' ';
+			outbuf[i++] = ' ';
 		} else {
-			for (unsigned char ii = 0; ii < csets[(inbuf[i] & 0xf0) >> 4]; ii++) {
+			for (ii = 0; ii < csets[(inbuf[i] & 0xf0) >> 4]; ii++) {
 				outbuf[i + ii] = cset[i][ii];
 			};
-			for (unsigned char ii = 0; ii < vsets[inbuf[i] & 0xf]; ii++) {
+			i += ii;
+			for (ii = 0; ii < vsets[inbuf[i] & 0xf]; ii++) {
 				outbuf[i + ii] = vset[i][ii];
 			};
+			i += ii;
 		};
-		i++;
 	};
 	return outbuf;
 }
